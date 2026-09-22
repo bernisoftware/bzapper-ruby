@@ -18,7 +18,7 @@ module Bzapper
       # Disconnect a partner app (admin). The partner's key stops working immediately. `DELETE
       # /me/connections/{id}`
       #
-      # @param id [String] Instance ID (UUID).
+      # @param id [String] Connected partner app (connection) ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).

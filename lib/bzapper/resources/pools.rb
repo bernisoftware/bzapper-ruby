@@ -36,7 +36,7 @@ module Bzapper
 
       # Get a pool (with members). `GET /pools/{id}`
       #
-      # @param id [String] Instance ID (UUID).
+      # @param id [String] Pool ID (UUID).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
       # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
@@ -47,7 +47,7 @@ module Bzapper
 
       # Add a number to the pool. `POST /pools/{id}/numbers`
       #
-      # @param id [String] Instance ID (UUID).
+      # @param id [String] Pool ID (UUID).
       # @param instance_id [String] (corpo)
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).

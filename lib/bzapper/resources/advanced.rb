@@ -8,7 +8,7 @@ module Bzapper
     class Advanced < Base
       # Edit the text of a sent message. `PATCH /messages/{id}`
       #
-      # @param id [String] Instance ID (UUID).
+      # @param id [String] bZapper message ID (UUID) — the `id` returned when the message was queued.
       # @param text [String] (corpo)
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
@@ -28,7 +28,7 @@ module Bzapper
 
       # Revoke a message (delete for everyone). `DELETE /messages/{id}`
       #
-      # @param id [String] Instance ID (UUID).
+      # @param id [String] bZapper message ID (UUID) — the `id` returned when the message was queued.
       # @param for_everyone [Boolean, nil] (query)
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
@@ -121,7 +121,7 @@ module Bzapper
 
       # Archive/unarchive a chat. `POST /chats/{jid}/archive`
       #
-      # @param jid [String] Group JID (…@g.us).
+      # @param jid [String] Chat JID — contact (…@s.whatsapp.net / …@lid) or group (…@g.us).
       # @param instance_id [String] (corpo)
       # @param on [Boolean] (corpo)
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
@@ -143,7 +143,7 @@ module Bzapper
 
       # Pin/unpin a chat. `POST /chats/{jid}/pin`
       #
-      # @param jid [String] Group JID (…@g.us).
+      # @param jid [String] Chat JID — contact (…@s.whatsapp.net / …@lid) or group (…@g.us).
       # @param instance_id [String] (corpo)
       # @param on [Boolean] (corpo)
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
@@ -165,7 +165,7 @@ module Bzapper
 
       # Mark a chat read/unread. `POST /chats/{jid}/read`
       #
-      # @param jid [String] Group JID (…@g.us).
+      # @param jid [String] Chat JID — contact (…@s.whatsapp.net / …@lid) or group (…@g.us).
       # @param instance_id [String] (corpo)
       # @param on [Boolean] (corpo)
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
@@ -187,7 +187,7 @@ module Bzapper
 
       # Mute/unmute a chat. `POST /chats/{jid}/mute`
       #
-      # @param jid [String] Group JID (…@g.us).
+      # @param jid [String] Chat JID — contact (…@s.whatsapp.net / …@lid) or group (…@g.us).
       # @param instance_id [String] (corpo)
       # @param on [Boolean] (corpo)
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
@@ -209,7 +209,7 @@ module Bzapper
 
       # Apply/remove a label on a chat (experimental). `POST /chats/{jid}/labels`
       #
-      # @param jid [String] Group JID (…@g.us).
+      # @param jid [String] Chat JID — contact (…@s.whatsapp.net / …@lid) or group (…@g.us).
       # @param instance_id [String] (corpo)
       # @param label_id [String] (corpo)
       # @param apply [Boolean, nil] (corpo) true = apply, false = remove.
@@ -289,7 +289,7 @@ module Bzapper
 
       # Block a contact. `POST /contacts/{jid}/block`
       #
-      # @param jid [String] Group JID (…@g.us).
+      # @param jid [String] Contact JID (…@s.whatsapp.net) to block/unblock.
       # @param instance_id [String] (corpo)
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
@@ -309,7 +309,7 @@ module Bzapper
 
       # Unblock a contact. `POST /contacts/{jid}/unblock`
       #
-      # @param jid [String] Group JID (…@g.us).
+      # @param jid [String] Contact JID (…@s.whatsapp.net) to block/unblock.
       # @param instance_id [String] (corpo)
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).

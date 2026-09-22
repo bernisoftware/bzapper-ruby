@@ -89,7 +89,7 @@ module Bzapper
 
       # Get one connection (status, account, numbers). `GET /partner/connections/{id}`
       #
-      # @param id [String] Instance ID (UUID).
+      # @param id [String] Partner connection ID (UUID).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
       # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
@@ -101,7 +101,7 @@ module Bzapper
       # End a connection (revokes the key; does NOT cancel the customer's plan). `DELETE
       # /partner/connections/{id}`
       #
-      # @param id [String] Instance ID (UUID).
+      # @param id [String] Partner connection ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -117,7 +117,7 @@ module Bzapper
       # Issue a new API key for a completed connection (the previous key stops working). `POST
       # /partner/connections/{id}/rotate-key`
       #
-      # @param id [String] Instance ID (UUID).
+      # @param id [String] Partner connection ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).

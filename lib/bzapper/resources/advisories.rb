@@ -22,7 +22,7 @@ module Bzapper
       #
       # Marks the advisory as handled; it stops being returned by `GET /advisories`.
       #
-      # @param id [String] parâmetro de caminho
+      # @param id [String] Advisory ID.
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).

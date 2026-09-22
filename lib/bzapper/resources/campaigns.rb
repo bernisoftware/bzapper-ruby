@@ -107,7 +107,7 @@ module Bzapper
 
       # Get a campaign with stats and variations. `GET /campaigns/{id}`
       #
-      # @param id [String] parâmetro de caminho
+      # @param id [String] Campaign ID (UUID).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
       # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
@@ -121,7 +121,7 @@ module Bzapper
       # Updates name, pacing, schedule and (if sent) replaces the variations. Only allowed while
       # draft/scheduled — 409 once started.
       #
-      # @param id [String] parâmetro de caminho
+      # @param id [String] Campaign ID (UUID).
       # @param name [String, nil] (corpo)
       # @param pacing_profile [String, nil] (corpo)
       # @param start_at [Time, String, nil] (corpo) Future start = scheduled campaign.
@@ -148,7 +148,7 @@ module Bzapper
 
       # List recipients with per-contact delivery. `GET /campaigns/{id}/recipients`
       #
-      # @param id [String] parâmetro de caminho
+      # @param id [String] Campaign ID (UUID).
       # @param limit [Integer, nil] (query)
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -163,7 +163,7 @@ module Bzapper
 
       # Add (or replace) recipients. `POST /campaigns/{id}/recipients`
       #
-      # @param id [String] parâmetro de caminho
+      # @param id [String] Campaign ID (UUID).
       # @param recipients [Array<Hash>, nil] (corpo)
       # @param contacts [Hash, nil] (corpo) Map of phone → payload, e.g. {"+5551999198087": {"name":
       #   "Vinicius"}}.
@@ -196,7 +196,7 @@ module Bzapper
 
       # Start (or schedule) a campaign. `POST /campaigns/{id}/start`
       #
-      # @param id [String] parâmetro de caminho
+      # @param id [String] Campaign ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -211,7 +211,7 @@ module Bzapper
 
       # Pause a campaign. `POST /campaigns/{id}/pause`
       #
-      # @param id [String] parâmetro de caminho
+      # @param id [String] Campaign ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -226,7 +226,7 @@ module Bzapper
 
       # Resume a campaign. `POST /campaigns/{id}/resume`
       #
-      # @param id [String] parâmetro de caminho
+      # @param id [String] Campaign ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -241,7 +241,7 @@ module Bzapper
 
       # Cancel a campaign. `POST /campaigns/{id}/cancel`
       #
-      # @param id [String] parâmetro de caminho
+      # @param id [String] Campaign ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -256,7 +256,7 @@ module Bzapper
 
       # Simulate a campaign without sending. `POST /campaigns/{id}/dry-run`
       #
-      # @param id [String] parâmetro de caminho
+      # @param id [String] Campaign ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).

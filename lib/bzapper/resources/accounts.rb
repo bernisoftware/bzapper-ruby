@@ -34,7 +34,7 @@ module Bzapper
 
       # Revoke a tenant API key. Admin only. `DELETE /keys/{id}`
       #
-      # @param id [String] Instance ID (UUID).
+      # @param id [String] API key ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -198,7 +198,7 @@ module Bzapper
       #
       # `api_mode` is immutable and is ignored here.
       #
-      # @param id [String] Resource ID (UUID).
+      # @param id [String] Project ID (UUID).
       # @param name [String] (corpo)
       # @param logo_url [String, nil] (corpo)
       # @param color [String, nil] (corpo)
@@ -223,7 +223,7 @@ module Bzapper
 
       # Delete a project (admin). `DELETE /projects/{id}`
       #
-      # @param id [String] Resource ID (UUID).
+      # @param id [String] Project ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -238,7 +238,7 @@ module Bzapper
 
       # Identity of the numbers of a specific project. `GET /projects/{id}/brand`
       #
-      # @param id [String] Resource ID (UUID).
+      # @param id [String] Project ID (UUID).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
       # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
@@ -249,7 +249,7 @@ module Bzapper
 
       # Save the identity of a specific project's numbers (admin). `PUT /projects/{id}/brand`
       #
-      # @param id [String] Resource ID (UUID).
+      # @param id [String] Project ID (UUID).
       # @param about [String, nil] (corpo) "About"/status — applied to all numbers.
       # @param display_name [String, nil] (corpo) Business name (kit).
       # @param logo_url [String, nil] (corpo) Logo URL (kit).
@@ -286,7 +286,7 @@ module Bzapper
       # Upload the project logo (multipart, PNG/JPEG/WebP up to 5 MB) — admin. `POST
       # /projects/{id}/logo`
       #
-      # @param id [String] Resource ID (UUID).
+      # @param id [String] Project ID (UUID).
       # @param file [String, IO, Pathname] conteúdo do arquivo (bytes), um IO ou o caminho no disco.
       # @param filename [String, nil] nome do arquivo (padrão: o do caminho, senão "file").
       # @param content_type [String, nil] tipo MIME (padrão: application/octet-stream).
@@ -337,7 +337,7 @@ module Bzapper
       #
       # Demoting the last administrator of the account is refused (409 last_admin).
       #
-      # @param id [String] Resource ID (UUID).
+      # @param id [String] Account user ID (UUID).
       # @param role [String] (corpo) agent = member (no billing)
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
@@ -359,7 +359,7 @@ module Bzapper
       #
       # You cannot remove yourself (409 self_remove) nor the last administrator (409 last_admin).
       #
-      # @param id [String] Resource ID (UUID).
+      # @param id [String] Account user ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).

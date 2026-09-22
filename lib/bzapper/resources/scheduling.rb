@@ -21,7 +21,7 @@ module Bzapper
 
       # Cancel a pending scheduled send. `DELETE /messages/scheduled/{id}`
       #
-      # @param id [String] parâmetro de caminho
+      # @param id [String] Scheduled message ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).

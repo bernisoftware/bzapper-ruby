@@ -337,7 +337,7 @@ module Bzapper
       #
       # Removes the tag from the dictionary and unlinks it from every contact.
       #
-      # @param id [String] Contact ID (UUID).
+      # @param id [String] Tag ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -389,7 +389,7 @@ module Bzapper
       #
       # Removes the contact group from the dictionary and unlinks it from every contact.
       #
-      # @param id [String] Contact ID (UUID).
+      # @param id [String] Contact group ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).

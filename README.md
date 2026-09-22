@@ -10,13 +10,13 @@ Zero dependências de runtime (só biblioteca padrão: `net/http`, `json`, `open
 ## Instalação
 
 ```bash
-gem install bzapper -v 0.7.0
+gem install bzapper -v 0.7.1
 ```
 
 Ou no `Gemfile` — **fixe a versão exata** (cada release declara se muda a superfície pública):
 
 ```ruby
-gem "bzapper", "0.7.0"
+gem "bzapper", "0.7.1"
 ```
 
 ## Hello world

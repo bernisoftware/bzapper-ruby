@@ -47,7 +47,7 @@ module Bzapper
       # = true. With `secret: "regenerate"` a new secret is generated and returned ONCE in the
       # response; any other non-empty `secret` replaces it.
       #
-      # @param id [String] Resource ID (UUID).
+      # @param id [String] Webhook ID (UUID).
       # @param url [String] (corpo)
       # @param secret [String, nil] (corpo) Empty = keep. "regenerate" = rotate (returned once).
       # @param event_types [Array<String>, nil] (corpo) Empty = all events.
@@ -76,7 +76,7 @@ module Bzapper
 
       # Remove a webhook. `DELETE /webhooks/{id}`
       #
-      # @param id [String] Instance ID (UUID).
+      # @param id [String] Webhook ID (UUID).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -91,7 +91,7 @@ module Bzapper
 
       # Send a signed sample event to this webhook and report the result. `POST /webhooks/{id}/test`
       #
-      # @param id [String] Resource ID (UUID).
+      # @param id [String] Webhook ID (UUID).
       # @param event_type [String, nil] (corpo) Event type of the sample (default a generic one).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
@@ -111,7 +111,7 @@ module Bzapper
 
       # Latest deliveries of a webhook. `GET /webhooks/{id}/deliveries`
       #
-      # @param id [String] Resource ID (UUID).
+      # @param id [String] Webhook ID (UUID).
       # @param limit [Integer, nil] (query) 1–200 (default 50).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
