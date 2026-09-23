@@ -27,6 +27,12 @@ module Bzapper
                                          idempotency_key: idempotency_key, timeout: timeout)
       end
 
+      # Rotas que respondem TEXTO (`text/csv`, ex.: `exportContacts`): devolve o corpo cru,
+      # sem JSON. Mesmos cabeçalhos, novas tentativas e erros do {#request}.
+      def request_text(method, path, query: nil, timeout: nil, accept: "text/csv")
+        @transport.request(method, path, query: query, timeout: timeout, accept: accept, as_text: true)
+      end
+
       def segment(value, name)
         Codec.path_segment(value, name)
       end

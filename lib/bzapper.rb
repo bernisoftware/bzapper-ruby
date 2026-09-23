@@ -26,5 +26,7 @@ require_relative "bzapper/codec"
 require_relative "bzapper/upload"
 require_relative "bzapper/transport"
 require_relative "bzapper/resources"
+# Escrito à mão: `exportContacts` responde CSV, fora dos métodos gerados.
+require_relative "bzapper/resources/contacts_export"
 require_relative "bzapper/client"
 require_relative "bzapper/webhook"

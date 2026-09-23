@@ -394,6 +394,90 @@ class ClientTest < Minitest::Test
   end
 end
 
+# `exportContacts` responde `text/csv`, e não JSON: fica fora dos casos gerados (BRIEF §6,
+# "CSV") e é coberto aqui — caminho, query, `Accept` e o texto voltando intacto.
+class CsvExportTest < ServerTestCase
+  HEADER = "phone,name,email,status,source,tags,groups,created_at,last_activity_at"
+  # Linha com vírgula dentro do campo e aspas escapadas: é o que um parser ingênuo estragaria.
+  CSV_TEXT = <<~CSV
+    #{HEADER}
+    +5511999990000,"Silva, Ana",ana@example.com,active,import,vip;lead,clientes,2026-09-01T12:00:00Z,2026-09-20T18:30:00Z
+    +5511888880000,"Loja ""Boa Vista""",,pending_validation,manual,,,2026-09-02T09:00:00Z,
+  CSV
+
+  def csv(body, status: 200)
+    { "status" => status, "headers" => { "Content-Disposition" => 'attachment; filename="contacts.csv"' },
+      "content_type" => "text/csv; charset=utf-8", "body" => body }
+  end
+
+  def test_csv_volta_intacto_como_texto
+    bz = client([csv(CSV_TEXT)])
+    result = bz.contacts.export_contacts
+
+    assert_kind_of String, result, "CSV volta como texto, não como Hash/Array"
+    assert_equal CSV_TEXT, result, "o texto volta byte a byte (vírgula e aspas inclusas)"
+    assert_equal Encoding::UTF_8, result.encoding
+    assert_includes result, '"Silva, Ana"'
+    assert_includes result, '"Loja ""Boa Vista"""'
+    assert_equal 3, result.lines.size, "cabeçalho + 2 contatos"
+
+    record = requests.first
+    assert_equal "GET", record[:method]
+    assert_equal "/contacts/export", record[:path]
+    assert_nil record[:raw_query], "sem filtro, sem query"
+    assert_equal "text/csv", record[:headers]["accept"], "não pede JSON"
+    refute_includes record[:headers]["accept"], "json"
+    refute record[:headers].key?("idempotency-key"), "GET não leva Idempotency-Key"
+    assert_equal "Bearer bz_live_unit", record[:headers]["authorization"]
+    assert_equal "bzapper-ruby/#{Bzapper::VERSION}", record[:headers]["x-bzapper-client"]
+    assert_match(/\A\h{32}\z/, record[:headers]["x-request-id"])
+  end
+
+  # Os filtros são os mesmos do listContacts (menos `offset`) e vão na query do jeito do §3.
+  def test_filtros_na_query
+    bz = client([csv(CSV_TEXT)])
+    bz.contacts.export_contacts(search: "ana silva", tags: %w[vip lead], tags_match: "all",
+                                groups: %w[clientes], status: "active", city: "São Paulo",
+                                has_email: true, created_after: Time.utc(2026, 9, 1, 12, 0, 0),
+                                sort: "name", limit: 50_000)
+
+    record = requests.first
+    assert_equal "/contacts/export", record[:path]
+    assert_equal [
+      %w[search ana\ silva], ["tags", "vip,lead"], %w[tags_match all], %w[groups clientes],
+      %w[status active], ["city", "São Paulo"], %w[has_email true],
+      %w[created_after 2026-09-01T12:00:00Z], %w[sort name], %w[limit 50000]
+    ], record[:query]
+    refute_includes record[:raw_query], " "
+    refute_includes record[:raw_query], "offset"
+  end
+
+  # Prova que o corpo não passa pelo JSON: texto que POR ACASO é JSON válido volta como texto.
+  def test_corpo_nao_e_parseado
+    bz = client([csv("phone,name\n[1,2],\"{}\"\n")])
+    assert_equal "phone,name\n[1,2],\"{}\"\n", bz.contacts.export_contacts(limit: 2)
+  end
+
+  def test_base_vazia_volta_string_vazia
+    bz = client([csv("")])
+    assert_equal "", bz.contacts.export_contacts, "corpo vazio não é INVALID_RESPONSE nem nil"
+  end
+
+  # Erro continua sendo erro do padrão (o corpo do erro é JSON, esse sim).
+  def test_erro_continua_json
+    bz = client([fail_with(401, "invalid_api_key")])
+    error = assert_raises(Bzapper::AuthenticationError) { bz.contacts.export_contacts }
+    assert_equal ["invalid_api_key", 401], [error.code, error.status]
+  end
+
+  # O caminho JSON do mesmo recurso segue igual (nada da CSV vazou para o list_contacts).
+  def test_list_contacts_nao_mudou
+    bz = client([ok({ "data" => [], "total" => 0 })])
+    assert_equal({ "data" => [], "total" => 0 }, bz.contacts.list_contacts(limit: 1))
+    assert_equal "application/json", requests.first[:headers]["accept"]
+  end
+end
+
 class PartnerTest < ServerTestCase
   def test_parceiro_usa_o_mesmo_transporte
     bz = partner([ok({ "api_key" => "bz_live_x" })])

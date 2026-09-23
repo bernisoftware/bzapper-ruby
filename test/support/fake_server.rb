@@ -116,7 +116,8 @@ class FakeServer
       content_type = nil
     elsif body.is_a?(String)
       payload = body.b
-      content_type = "text/plain; charset=utf-8"
+      # `content_type` deixa o caso escolher (ex.: `text/csv` do exportContacts).
+      content_type = response["content_type"] || "text/plain; charset=utf-8"
     else
       payload = JSON.generate(body).b
       content_type = "application/json"

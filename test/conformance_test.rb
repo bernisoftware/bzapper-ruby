@@ -18,6 +18,9 @@ module Conformance
   CASES = TestSupport.cases
   API_KEY = CASES.fetch("api_key")
   EXCLUDED = CASES.fetch("sdk_excluded_ops", []).freeze
+  # Ops de fora dos casos gerados que a SDK TEM, ainda assim: respondem texto (`text/csv`), e
+  # não JSON (BRIEF §6, "CSV"). Cada uma tem teste próprio (test/unit_test.rb, CsvExportTest).
+  TEXT_OPS = %w[exportContacts].freeze
   CLIENT_RE = %r{\Abzapper-ruby/#{Regexp.escape(Bzapper::VERSION)}\z}.freeze
   REQUEST_ID_RE = /\A[0-9a-f]{32}\z/.freeze
   WRITES = %w[POST PUT PATCH DELETE].freeze
@@ -257,7 +260,7 @@ class ConformanceCoverageTest < Minitest::Test
 
   def test_os_casos_foram_carregados
     assert_operator CASES.fetch("cases").size, :>=, 181
-    assert_equal 159, CASES.fetch("ops").size
+    assert_equal 161, CASES.fetch("ops").size
     assert_equal 2, CASES.fetch("max_retries")
   end
 
@@ -293,9 +296,13 @@ class ConformanceCoverageTest < Minitest::Test
     partner = Bzapper::PartnerClient.new(API_KEY)
     methods = Bzapper::ResourceAccessors::RESOURCES.flat_map { |r| client.public_send(r).public_methods(false) }
     methods += partner.public_methods
-    EXCLUDED.each do |op|
-      snake = op.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase.to_sym
-      refute_includes methods, snake, "#{op} está em sdk_excluded_ops e não entra na SDK"
+    snake = ->(op) { op.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase.to_sym }
+    (EXCLUDED - TEXT_OPS).each do |op|
+      refute_includes methods, snake.call(op), "#{op} está em sdk_excluded_ops e não entra na SDK"
+    end
+    TEXT_OPS.each do |op|
+      assert_includes methods, snake.call(op),
+                      "#{op} responde texto (fora dos casos gerados), mas a SDK TEM o método"
     end
   end
 

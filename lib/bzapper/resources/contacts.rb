@@ -105,6 +105,33 @@ module Bzapper
                 timeout: timeout)
       end
 
+      # Import contacts in bulk. `POST /contacts/import`
+      #
+      # Upserts up to 1000 contacts by phone in one call. A new contact is created with `source:
+      # import` and `status: pending_validation` (it needs opt-in before a campaign). An existing one
+      # has only its informed fields updated — a blank value never erases what is there. A
+      # suppressed/opted-out/blocked contact is reported in `skipped_rows` and never resurrected. Tags
+      # and groups are created on demand. A bad row is reported in `errors` and does NOT fail the rest
+      # of the call. `dry_run` validates everything and writes nothing.
+      #
+      # @param contacts [Array<Hash>] (corpo)
+      # @param dry_run [Boolean, nil] (corpo) Validates and reports without writing anything.
+      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def import_contacts(contacts:, dry_run: UNSET, idempotency_key: nil, timeout: nil)
+        payload = compact(
+          "contacts" => contacts,
+          "dry_run" => dry_run
+        )
+        request("POST",
+                "/contacts/import",
+                body: payload,
+                idempotency_key: idempotency_key,
+                timeout: timeout)
+      end
+
       # Get a contact. `GET /contacts/{id}`
       #
       # @param id [String] Contact ID (UUID).

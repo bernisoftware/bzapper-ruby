@@ -47,6 +47,33 @@ module Bzapper
                 timeout: timeout)
       end
 
+      # Rotate a tenant API key. Admin only. `POST /keys/{id}/rotate`
+      #
+      # Creates a NEW key inheriting the old one's role, scopes, project and name, and keeps the OLD
+      # key working for a grace period so a running integration does not break mid-deploy. The raw key
+      # is shown ONCE. After the deadline the old key answers `401 key_expired`. `revoke_in_seconds:
+      # 0` revokes it immediately (default 86400, max 30 days). Partner keys (bZapper Connect) rotate
+      # through `/partner/connections/{id}/rotate-key`.
+      #
+      # @param id [String] API key ID (UUID).
+      # @param revoke_in_seconds [Integer, nil] (corpo) Grace period for the OLD key. 0 revokes it
+      #   immediately.
+      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      # @raise [ArgumentError] parâmetro de caminho vazio, "." ou "..".
+      def rotate_my_key(id, revoke_in_seconds: UNSET, idempotency_key: nil, timeout: nil)
+        payload = compact(
+          "revoke_in_seconds" => revoke_in_seconds
+        )
+        request("POST",
+                "/keys/#{segment(id, "id")}/rotate",
+                body: payload,
+                idempotency_key: idempotency_key,
+                timeout: timeout)
+      end
+
       # Authenticated identity (+ profile when it's a user session). `GET /me`
       #
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).

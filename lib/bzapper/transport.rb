@@ -96,8 +96,12 @@ module Bzapper
     # Executa a chamada e devolve o JSON decodificado da resposta (`nil` sem corpo).
     #
     # `body: nil` significa SEM corpo JSON; `multipart:` é um {Upload}.
+    #
+    # `accept:` troca o `Accept` (padrão `application/json`) e `as_text: true` devolve o corpo
+    # CRU em texto, sem passar por JSON — é o caminho das rotas `text/csv` (`exportContacts`).
     # @raise [Bzapper::Error]
-    def request(method, path, query: nil, body: nil, multipart: nil, idempotency_key: nil, timeout: nil)
+    def request(method, path, query: nil, body: nil, multipart: nil, idempotency_key: nil, timeout: nil,
+                accept: nil, as_text: false)
       method = method.to_s.upcase
       per_try = timeout.nil? ? @timeout : timeout
       unless per_try.is_a?(Numeric) && per_try.positive?
@@ -108,7 +112,7 @@ module Bzapper
       request_id = SecureRandom.uuid.delete("-")
       headers = {
         "Authorization" => "Bearer #{@api_key}",
-        "Accept" => "application/json",
+        "Accept" => accept || "application/json",
         "X-Bzapper-Client" => CLIENT_ID,
         "User-Agent" => CLIENT_ID,
         # Mesmo id em todas as tentativas desta chamada: é como o suporte correlaciona.
@@ -146,7 +150,10 @@ module Bzapper
           )
         end
 
-        return decode(status, resp_headers, raw, request_id) if status.between?(200, 299)
+        if status.between?(200, 299)
+          # Texto: o corpo volta como veio (o `INVALID_RESPONSE` do §4 não vale aqui).
+          return as_text ? Codec.utf8(raw) : decode(status, resp_headers, raw, request_id)
+        end
 
         if RETRY_STATUSES.include?(status) && attempt < @max_retries
           @sleeper.call(retry_delay(attempt, resp_headers["retry-after"]))

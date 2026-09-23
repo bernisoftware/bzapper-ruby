@@ -10,13 +10,13 @@ Zero dependências de runtime (só biblioteca padrão: `net/http`, `json`, `open
 ## Instalação
 
 ```bash
-gem install bzapper -v 0.7.1
+gem install bzapper -v 0.8.0
 ```
 
 Ou no `Gemfile` — **fixe a versão exata** (cada release declara se muda a superfície pública):
 
 ```ruby
-gem "bzapper", "0.7.1"
+gem "bzapper", "0.8.0"
 ```
 
 ## Hello world
@@ -53,6 +53,27 @@ client = Bzapper::Client.new(
 Construir o cliente não faz nenhuma chamada de rede. Um cliente pode ser compartilhado entre
 threads.
 
+### Trocar a chave sem derrubar a integração (rotação)
+
+`rotate_my_key` (admin) cria uma chave **nova** herdando papel, escopos, projeto e nome da
+antiga, e mantém a antiga funcionando por um período de graça — dá tempo de fazer o deploy sem
+janela de erro. A chave crua aparece **uma única vez**, no retorno. Depois do prazo a antiga
+responde `401 key_expired`; `revoke_in_seconds: 0` revoga na hora (padrão 86400 s, máximo 30
+dias). Chave de parceiro (bZapper Connect) roda pelo `PartnerClient#rotate_partner_connection_key`.
+
+```ruby
+rotated = client.accounts.rotate_my_key(key_id, revoke_in_seconds: 3600) # 1 h de graça
+
+rotated["api_key"]                 # a chave NOVA, crua — guarde agora, não volta
+rotated["key"]["id"]               # metadados da nova
+rotated["previous_key"]["expires_at"] # quando a antiga para de funcionar (nil se revogada já)
+rotated["old_key_expires_at"]      # o mesmo instante, no topo do retorno
+rotated["previous_key"]["rotated_to"] # id da chave que substituiu a antiga
+```
+
+Uma chave já revogada ou já vencida responde `409` (`key_already_revoked` /
+`key_already_expired`).
+
 ## Como os métodos funcionam
 
 Os métodos ficam em **recursos**, um por área da API, e se chamam como o `operationId` da
@@ -66,13 +87,13 @@ spec OpenAPI em snake_case (`sendText` → `send_text`):
 | `client.groups` | `list_groups`, `create_group`, `get_group`, `update_group`, `update_group_participants`, `group_invite_link`, `join_group`, `preview_group_invite`, `leave_group`, pedidos de entrada |
 | `client.conversations` | `list_conversations`, `conversation_history` |
 | `client.advanced` | editar/apagar/encaminhar mensagem, perfil, privacidade, arquivar/fixar/ler/silenciar chat, etiquetas, bloqueio, chamadas |
-| `client.contacts` | CRM (`list_contacts`, `create_contact`, `update_contact`…), tags, grupos de contatos, opt-in/out, supressões, `contacts_check` |
+| `client.contacts` | CRM (`list_contacts`, `create_contact`, `update_contact`…), `import_contacts` (lote), `export_contacts` (CSV), tags, grupos de contatos, opt-in/out, supressões, `contacts_check` |
 | `client.campaigns` | `create_campaign`, `estimate_campaign`, destinatários, `dry_run_campaign`, `start/pause/resume/cancel_campaign` |
 | `client.pools` | pools de números |
 | `client.webhooks` | `create_webhook`, `update_webhook`, `test_webhook`, `list_webhook_deliveries`… |
 | `client.advisories` | avisos "atualize sua integração" |
 | `client.usage` / `client.billing` | consumo; plano, assinatura, add-ons, faturas, preços |
-| `client.accounts` | perfil, chaves de API, marca, projetos, usuários |
+| `client.accounts` | perfil, chaves de API (`rotate_my_key`), marca, projetos, usuários |
 | `client.connect` | apps parceiros conectados à sua conta |
 | `client.system` | `get_health` |
 
@@ -88,6 +109,8 @@ Convenções (iguais em todos os métodos):
   vêm como `{"data" => [...], ...}` (a SDK não desembrulha, para não perder paginação e
   metadados). Campos novos da API aparecem sem quebrar nada. `204` → `nil`.
 * Parâmetro de caminho vazio, `"."` ou `".."` → `ArgumentError` antes de qualquer requisição.
+* Uma exceção ao retorno: `client.contacts.export_contacts` devolve **`String`** (o CSV cru),
+  porque a rota responde `text/csv` e não JSON.
 
 ## Mensagens
 
@@ -161,6 +184,48 @@ client.contacts.contacts_check(instance_id: "…", phones: ["+5511999999999"]) #
 ```
 
 O vínculo contato ↔ projeto/número é mantido **automaticamente** pela API.
+
+### Importar em lote
+
+Até **1000** contatos por chamada, upsert por telefone: o novo entra como
+`pending_validation` (precisa de opt-in antes de campanha), o que já existe só recebe os campos
+informados — valor em branco não apaga o que está lá. Linha ruim vai para `errors` e **não**
+derruba o resto; contato suprimido/opt-out/bloqueado aparece em `skipped_rows` e nunca
+ressuscita. Tags e grupos são criados na hora. `dry_run: true` valida tudo e não grava nada.
+
+```ruby
+result = client.contacts.import_contacts(
+  contacts: [
+    { phone: "+5511999999999", name: "Ana", email: "ana@example.com", tags: %w[vip] },
+    { phone: "+5511888888888", name: "Bruno", document: "12345678900", document_type: "cpf",
+      address: { city: "São Paulo", state: "SP", country: "BR" }, groups: %w[clientes] }
+  ],
+  dry_run: true # ensaio: nada é gravado
+)
+result["created"] # => 2
+result["errors"].each { |row| warn "linha #{row['index']} (#{row['phone']}): #{row['reason']}" }
+```
+
+### Exportar em CSV
+
+`export_contacts` aceita os **mesmos filtros** do `list_contacts` (menos `offset`; use `limit`
+para limitar as linhas) e devolve o **texto do CSV** — uma `String` UTF-8, não JSON. Colunas:
+`phone,name,email,status,source,tags,groups,created_at,last_activity_at`, com tags e grupos
+unidos por `;` e instantes em RFC 3339 UTC.
+
+```ruby
+require "csv"
+
+csv = client.contacts.export_contacts(status: "active", tags: %w[vip], has_email: true,
+                                      created_after: Time.utc(2026, 1, 1), limit: 50_000)
+
+File.write("contatos.csv", csv)                       # gravar como veio
+CSV.parse(csv, headers: true) { |row| puts row["phone"] } # ou percorrer linha a linha
+```
+
+Vírgulas e aspas dentro dos campos vêm escapadas pelo servidor — não monte o CSV de novo,
+entregue o texto ao parser. Para bases muito grandes, exporte em fatias com os filtros
+(`created_after`/`created_before`, `limit`) em vez de puxar tudo de uma vez.
 
 ## Campanhas
 

@@ -99,9 +99,15 @@ module Bzapper
       end
     end
 
+    # Corpo cru → texto UTF-8 (bytes inválidos trocados). É o que as rotas de texto
+    # (`text/csv`, ex.: `exportContacts`) devolvem, sem passar por JSON.
+    def utf8(raw)
+      raw.to_s.dup.force_encoding(::Encoding::UTF_8).scrub
+    end
+
     # Texto UTF-8 (bytes inválidos trocados) → `[json_ou_nil, texto, é_json?]`.
     def decode_json(raw)
-      text = raw.to_s.dup.force_encoding(::Encoding::UTF_8).scrub
+      text = utf8(raw)
       return [nil, text, false] if text.strip.empty?
 
       [JSON.parse(text), text, true]
