@@ -10,13 +10,13 @@ Zero dependências de runtime (só biblioteca padrão: `net/http`, `json`, `open
 ## Instalação
 
 ```bash
-gem install bzapper -v 0.8.1
+gem install bzapper -v 0.8.2
 ```
 
 Ou no `Gemfile` — **fixe a versão exata** (cada release declara se muda a superfície pública):
 
 ```ruby
-gem "bzapper", "0.8.1"
+gem "bzapper", "0.8.2"
 ```
 
 ## Hello world
@@ -125,7 +125,7 @@ m.send_document(to: to, media: { url: "https://example.com/nota.pdf", filename: 
 m.send_audio(to: to, media: { url: "https://example.com/audio.ogg", ptt: true }) # ptt = mensagem de voz
 m.send_sticker(to: to, media: { url: "https://example.com/sticker.webp" })
 m.send_location(to: to, latitude: -23.5613, longitude: -46.6565, name: "Av. Paulista")
-m.send_contact(to: to, contact_name: "Berni Software", contact_vcard: "BEGIN:VCARD…")
+m.send_contact(to: to, contact_name: "Berni Software", contact_phone: "+5511977776666")
 m.send_poll(to: to, name: "Pizza ou sushi?", options: %w[Pizza Sushi], selectable_count: 1)
 m.send_reaction(to: to, quoted_message_id: "ABCD1234", emoji: "👍") # emoji "" remove
 m.send_buttons(to: to, body: "Escolha:", buttons: [{ id: "a", title: "Opção A" }, { id: "b", title: "Opção B" }])

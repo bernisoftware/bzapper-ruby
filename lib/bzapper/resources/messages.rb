@@ -17,7 +17,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -80,7 +82,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -143,7 +147,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -206,7 +212,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -270,7 +278,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -333,7 +343,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -397,7 +409,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -467,7 +481,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -488,8 +504,12 @@ module Bzapper
       # @param force [Boolean, nil] (corpo) OPTIONAL. When true, bypasses an inferred suppression
       #   (e.g. opt-out inferred from behaviour) for this send. Does NOT override an explicit
       #   suppression entry (`/suppressions`) — use with care and only with a lawful basis.
-      # @param contact_name [String, nil] (corpo)
-      # @param contact_vcard [String, nil] (corpo)
+      # @param contact_name [String, nil] (corpo) Name shown on the card.
+      # @param contact_phone [String, nil] (corpo) The CARD CONTACT's phone in E.164 — the person
+      #   being shared, never the destination. Required with contact_name (not needed when you send a
+      #   ready contact_vcard); it is what makes WhatsApp recognise the card as a contact.
+      # @param contact_vcard [String, nil] (corpo) Ready vCard; when present,
+      #   contact_name/contact_phone are not used to build one.
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -498,7 +518,8 @@ module Bzapper
                        quoted_message_id: UNSET, quoted_participant: UNSET,
                        client_reference: UNSET, mentions: UNSET, scheduled_at: UNSET,
                        groups: UNSET, tags: UNSET, force: UNSET, contact_name: UNSET,
-                       contact_vcard: UNSET, idempotency_key: nil, timeout: nil)
+                       contact_phone: UNSET, contact_vcard: UNSET, idempotency_key: nil,
+                       timeout: nil)
         payload = compact(
           "instance_id" => instance_id,
           "pool_id" => pool_id,
@@ -513,6 +534,7 @@ module Bzapper
           "tags" => tags,
           "force" => force,
           "contact_name" => contact_name,
+          "contact_phone" => contact_phone,
           "contact_vcard" => contact_vcard
         )
         request("POST",
@@ -533,7 +555,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -600,7 +624,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -666,7 +692,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -734,7 +762,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -808,7 +838,9 @@ module Bzapper
       #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
       #   the whole interaction stays on the same number. Default **true**; send **false** to force
       #   rotation (e.g. campaign/broadcast).
-      # @param to [String] (corpo) Destination E.164 phone or JID.
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
