@@ -871,6 +871,12 @@ module Bzapper
       #   language, with variations.
       # @param expiry_minutes [Integer, nil] (corpo) Optional — mentions the expiry in the generated
       #   text.
+      # @param template [String, nil] (corpo) OFFICIAL RAIL ONLY, optional. Name of an approved
+      #   AUTHENTICATION template to carry the code — used even inside the 24-hour window. Without it,
+      #   the project's authentication template is used only when the window is closed. Ignored on the
+      #   unofficial rail.
+      # @param language [String, nil] (corpo) Optional language of the authentication template (e.g.
+      #   `pt_BR`).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -878,7 +884,8 @@ module Bzapper
       def send_otp(to:, code:, instance_id: UNSET, pool_id: UNSET, sticky: UNSET,
                    quoted_message_id: UNSET, quoted_participant: UNSET, client_reference: UNSET,
                    mentions: UNSET, scheduled_at: UNSET, groups: UNSET, tags: UNSET, force: UNSET,
-                   body: UNSET, expiry_minutes: UNSET, idempotency_key: nil, timeout: nil)
+                   body: UNSET, expiry_minutes: UNSET, template: UNSET, language: UNSET,
+                   idempotency_key: nil, timeout: nil)
         payload = compact(
           "instance_id" => instance_id,
           "pool_id" => pool_id,
@@ -894,7 +901,9 @@ module Bzapper
           "force" => force,
           "code" => code,
           "body" => body,
-          "expiry_minutes" => expiry_minutes
+          "expiry_minutes" => expiry_minutes,
+          "template" => template,
+          "language" => language
         )
         request("POST",
                 "/messages/otp",
