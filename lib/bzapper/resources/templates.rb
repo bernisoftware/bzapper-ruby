@@ -143,6 +143,45 @@ module Bzapper
                 timeout: timeout)
       end
 
+      # Get the verification-code template and whether Meta allows Authentication templates. `GET
+      # /templates/otp`
+      #
+      # The template that carries the code of POST /messages/otp when the 24-hour window is closed
+      # (null = the first approved Authentication template is used), plus the account's eligibility
+      # for the Authentication category: Meta requires the business to be verified and the number to
+      # reach the 2,000-a-day sending limit. Each criterion comes with its current state, so the
+      # customer knows what is missing.
+      #
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def get_otp_template(timeout: nil)
+        request("GET", "/templates/otp", timeout: timeout)
+      end
+
+      # Choose the template that carries the verification code outside the window. `PUT
+      # /templates/otp`
+      #
+      # Must be an APPROVED template of the Authentication category — Meta accepts codes in no other
+      # category. An empty `template_id` clears the choice (the first approved Authentication template
+      # is used again).
+      #
+      # @param template_id [String, nil] (corpo) Empty clears the choice.
+      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def set_otp_template(template_id: UNSET, idempotency_key: nil, timeout: nil)
+        payload = compact(
+          "template_id" => template_id
+        )
+        request("PUT",
+                "/templates/otp",
+                body: payload,
+                idempotency_key: idempotency_key,
+                timeout: timeout)
+      end
+
       # Upload the header sample of a template (multipart, JPEG/PNG/MP4/PDF up to 10 MB). `POST
       # /templates/media`
       #
