@@ -124,6 +124,27 @@ module Bzapper
         request("GET", "/webhooks/#{segment(id, "id")}/deliveries", query: query, timeout: timeout)
       end
 
+      # Redeliver a failed delivery. `POST /webhooks/{id}/deliveries/{delivery_id}/redeliver`
+      #
+      # Sends a FAILED delivery again: same body and same event_id (your idempotency keeps working),
+      # signed with the webhook's CURRENT secret. One attempt; the outcome updates the delivery. Only
+      # deliveries that failed in the last 7 days can be redelivered — the body carries conversation
+      # content and is kept only for that long.
+      #
+      # @param id [String] Webhook ID (UUID).
+      # @param delivery_id [String] Delivery id (from listWebhookDeliveries).
+      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      # @raise [ArgumentError] parâmetro de caminho vazio, "." ou "..".
+      def redeliver_webhook_delivery(id, delivery_id, idempotency_key: nil, timeout: nil)
+        request("POST",
+                "/webhooks/#{segment(id, "id")}/deliveries/#{segment(delivery_id, "delivery_id")}/redeliver",
+                idempotency_key: idempotency_key,
+                timeout: timeout)
+      end
+
       # Emit a sample event to the project's stream and webhooks (like `stripe trigger`). `POST
       # /webhooks/trigger`
       #

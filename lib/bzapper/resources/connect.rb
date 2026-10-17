@@ -30,6 +30,23 @@ module Bzapper
                 idempotency_key: idempotency_key,
                 timeout: timeout)
       end
+
+      # Convert a partner-created account to general use (admin). The connection stays: the partner
+      # keeps working and any partnership discount keeps applying. What changes is that the account
+      # may issue its own API keys. Irreversible. `POST /me/connections/{id}/standalone`
+      #
+      # @param id [String] Connected partner app (connection) ID (UUID).
+      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      # @raise [ArgumentError] parâmetro de caminho vazio, "." ou "..".
+      def convert_connected_app_to_standalone(id, idempotency_key: nil, timeout: nil)
+        request("POST",
+                "/me/connections/#{segment(id, "id")}/standalone",
+                idempotency_key: idempotency_key,
+                timeout: timeout)
+      end
     end
   end
 end

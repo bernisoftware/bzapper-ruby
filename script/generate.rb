@@ -46,11 +46,22 @@ TAG_DOCS = {
   "groups" => "Grupos do WhatsApp: info, participantes, convite, prévia e pedidos de entrada",
   "instances" => "Números (instâncias): conexão, QR, sessão, proxy, filtros de entrada e conta oficial",
   "messages" => "Envio de mensagens (todos os tipos, OTP), presença e confirmação de leitura",
+  "official" => "Trilho oficial (WhatsApp Cloud API): conta WABA, Embedded Signup, números e perfil comercial",
   "pools" => "Pools de números (rotação)",
   "scheduling" => "Envios agendados",
   "system" => "Saúde e meta",
+  "templates" => "Templates de mensagem aprovados pela Meta (trilho oficial): criar, sincronizar, mídia e fallback",
   "usage" => "Uso medido (consumo)",
   "webhooks" => "Webhooks de eventos (gestão, teste, entregas)"
+}.freeze
+
+# Operações que trocaram de tag na spec: continuam TAMBÉM no recurso antigo (cópia do método),
+# para não quebrar quem já chama `client.<tag_antiga>.<método>` (BRIEF §1 — só aditivo). A
+# tabela da conformidade aponta para o recurso novo.
+COMPAT_TAGS = {
+  "getOfficialAccount" => "instances",
+  "connectOfficialAccount" => "instances",
+  "disconnectOfficialAccount" => "instances"
 }.freeze
 
 # ── YAML com booleanos só `true`/`false` (em YAML 1.1 `on` vira booleano — e `on` é campo) ──
@@ -257,10 +268,14 @@ class Generator
     parts
   end
 
-  def method_source(op, indent)
+  def method_source(op, indent, compat_of: nil)
     pad = " " * indent
     out = []
     out.concat(wrap("#{op[:summary].sub(/[.\s]+\z/, '')}. `#{op[:verb]} #{op[:path]}`", 100 - indent, "#{pad}# "))
+    if compat_of
+      out << "#{pad}#"
+      out << "#{pad}# Mantido aqui por compatibilidade — o mesmo que `client.#{compat_of}.#{op[:name]}`."
+    end
     if op[:description] && !clean(op[:description]).empty?
       out << "#{pad}#"
       out.concat(wrap(op[:description], 100 - indent, "#{pad}# "))
@@ -358,9 +373,11 @@ class Generator
 
   HEADER = "# frozen_string_literal: true\n\n# GERADO por script/generate.rb a partir de packages/sdk/openapi.yaml — não edite à mão.\n"
 
-  def resource_file(tag, ops)
+  def resource_file(tag, ops, compat = [])
     klass = camel(tag)
-    body = ops.map { |op| method_source(op, 6) }.join("\n\n")
+    sources = ops.map { |op| method_source(op, 6) }
+    sources.concat(compat.map { |op| method_source(op, 6, compat_of: op[:tag]) })
+    body = sources.join("\n\n")
     <<~RUBY
       #{HEADER}
       module Bzapper
@@ -452,7 +469,12 @@ class Generator
     raise "tag sem doc em TAG_DOCS: #{unknown}" unless unknown.empty?
 
     out = {}
-    groups.each { |tag, list| out["lib/bzapper/resources/#{tag}.rb"] = resource_file(tag, list) }
+    compat = client_ops.select { |o| COMPAT_TAGS.key?(o[:oid]) }.group_by { |o| COMPAT_TAGS[o[:oid]] }
+    raise "COMPAT_TAGS para tag inexistente: #{compat.keys - groups.keys}" unless (compat.keys - groups.keys).empty?
+
+    groups.each do |tag, list|
+      out["lib/bzapper/resources/#{tag}.rb"] = resource_file(tag, list, compat.fetch(tag, []))
+    end
     out["lib/bzapper/resources/partner.rb"] = partner_file(partner_ops)
     out["lib/bzapper/resources.rb"] = index_file(groups)
     out["test/support/ops_table.rb"] = ops_table(groups, partner_ops)

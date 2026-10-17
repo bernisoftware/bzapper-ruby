@@ -68,10 +68,10 @@ module Bzapper
         request("GET", "/campaigns/estimate", query: query, timeout: timeout)
       end
 
-      # Per-number campaign eligibility (connection + warm-up). `GET /campaigns/eligibility`
+      # Per-number campaign eligibility (connection and age). `GET /campaigns/eligibility`
       #
-      # Same engine the dispatcher uses: which numbers can send campaigns now, the account's anti-ban
-      # policy (warm-up days, minimum numbers) and whether a campaign can be started.
+      # Same engine the dispatcher uses: which numbers can send campaigns now, the account's campaign
+      # policy (minimum connection age, minimum numbers) and whether a campaign can be started.
       #
       # @param pool_id [String, nil] (query) Restrict to a pool.
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).

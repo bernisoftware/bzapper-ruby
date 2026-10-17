@@ -105,7 +105,8 @@ module Bzapper
       # @param force [Boolean, nil] (corpo) OPTIONAL. When true, bypasses an inferred suppression
       #   (e.g. opt-out inferred from behaviour) for this send. Does NOT override an explicit
       #   suppression entry (`/suppressions`) — use with care and only with a lawful basis.
-      # @param media [Hash] (corpo) Media by URL **or** base64 (never both).
+      # @param media [Hash] (corpo) Media by URL **or** base64 (never both) — or, on the official
+      #   rail, by `id` (a file already uploaded with `uploadOfficialMedia`).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -170,7 +171,8 @@ module Bzapper
       # @param force [Boolean, nil] (corpo) OPTIONAL. When true, bypasses an inferred suppression
       #   (e.g. opt-out inferred from behaviour) for this send. Does NOT override an explicit
       #   suppression entry (`/suppressions`) — use with care and only with a lawful basis.
-      # @param media [Hash] (corpo) Media by URL **or** base64 (never both).
+      # @param media [Hash] (corpo) Media by URL **or** base64 (never both) — or, on the official
+      #   rail, by `id` (a file already uploaded with `uploadOfficialMedia`).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -235,7 +237,8 @@ module Bzapper
       # @param force [Boolean, nil] (corpo) OPTIONAL. When true, bypasses an inferred suppression
       #   (e.g. opt-out inferred from behaviour) for this send. Does NOT override an explicit
       #   suppression entry (`/suppressions`) — use with care and only with a lawful basis.
-      # @param media [Hash] (corpo) Media by URL **or** base64 (never both).
+      # @param media [Hash] (corpo) Media by URL **or** base64 (never both) — or, on the official
+      #   rail, by `id` (a file already uploaded with `uploadOfficialMedia`).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -301,7 +304,8 @@ module Bzapper
       # @param force [Boolean, nil] (corpo) OPTIONAL. When true, bypasses an inferred suppression
       #   (e.g. opt-out inferred from behaviour) for this send. Does NOT override an explicit
       #   suppression entry (`/suppressions`) — use with care and only with a lawful basis.
-      # @param media [Hash] (corpo) Media by URL **or** base64 (never both).
+      # @param media [Hash] (corpo) Media by URL **or** base64 (never both) — or, on the official
+      #   rail, by `id` (a file already uploaded with `uploadOfficialMedia`).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -366,7 +370,8 @@ module Bzapper
       # @param force [Boolean, nil] (corpo) OPTIONAL. When true, bypasses an inferred suppression
       #   (e.g. opt-out inferred from behaviour) for this send. Does NOT override an explicit
       #   suppression entry (`/suppressions`) — use with care and only with a lawful basis.
-      # @param media [Hash] (corpo) Media by URL **or** base64 (never both).
+      # @param media [Hash] (corpo) Media by URL **or** base64 (never both) — or, on the official
+      #   rail, by `id` (a file already uploaded with `uploadOfficialMedia`).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -893,6 +898,101 @@ module Bzapper
         )
         request("POST",
                 "/messages/otp",
+                body: payload,
+                idempotency_key: idempotency_key,
+                timeout: timeout)
+      end
+
+      # Send an approved template by name. `POST /messages/template`
+      #
+      # The ONLY way to start a conversation outside the 24-hour service window. You pass the template
+      # NAME and the values; the id Meta assigned to it never appears. `language` may be omitted when
+      # the name exists in a single language — asking for it when there is no ambiguity would be
+      # paperwork. If the name exists in more than one, the answer is 409 `template_ambiguous`,
+      # because picking the wrong language for someone is worse than asking. The number of `variables`
+      # must match the approved body exactly. We check that here rather than spending the call: a
+      # mismatch is the number one cause of Meta error 132000. For an AUTHENTICATION template, send
+      # the code in `code` — Meta requires it both in the body and in the copy-code button, and we
+      # place it in both.
+      #
+      # @param instance_id [String, nil] (corpo) OPTIONAL. Only `to` is required. Omit `instance_id`
+      #   to let the gateway auto-pick a number from your pool (rotation + conversation affinity) — the
+      #   recommended path. Provide it ONLY to FORCE the send from a specific number. Get ids from `GET
+      #   /instances`.
+      # @param pool_id [String, nil] (corpo) Rotates within this pool (when instance_id is omitted).
+      # @param sticky [Boolean, nil] (corpo) Conversation affinity (support): without
+      #   instance_id/pool_id, it AUTOMATICALLY reuses the number that already talks to `to`, ensuring
+      #   the whole interaction stays on the same number. Default **true**; send **false** to force
+      #   rotation (e.g. campaign/broadcast).
+      # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
+      #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
+      #   phone when the connected number knows it; the official rail accepts phone only.
+      # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
+      # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
+      #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
+      #   it is resolved automatically.
+      # @param client_reference [String, nil] (corpo) Client end-to-end correlation.
+      # @param mentions [Array<String>, nil] (corpo) Mentioned people (group): phones ("5511…", "+55
+      #   11 9…") or JIDs. The body must contain "@<digits>" for the mention to be highlighted.
+      # @param scheduled_at [Time, String, nil] (corpo) OPTIONAL. Schedule the send for a future
+      #   RFC3339 timestamp. The gateway holds the message and dispatches it at that exact time (the
+      #   number is picked at send time). Max lead time by plan: Free 24h, Pro 30 days, and up to 1 year
+      #   with the "Extended scheduling" add-on. Returns status `scheduled` with a `scheduled_id`. OTP
+      #   cannot be scheduled.
+      # @param groups [Array<String>, nil] (corpo) OPTIONAL. Contact-group keys to correlate/stamp
+      #   onto the recipient contact when this send resolves (see `GET /contact-groups`). Does not send
+      #   the message to a WhatsApp group.
+      # @param tags [Array<String>, nil] (corpo) OPTIONAL. Tag keys to correlate/stamp onto the
+      #   recipient contact when this send resolves (see `GET /tags`).
+      # @param force [Boolean, nil] (corpo) OPTIONAL. When true, bypasses an inferred suppression
+      #   (e.g. opt-out inferred from behaviour) for this send. Does NOT override an explicit
+      #   suppression entry (`/suppressions`) — use with care and only with a lawful basis.
+      # @param template [String] (corpo) Template NAME. The id Meta assigned to it never appears here.
+      # @param language [String, nil] (corpo) e.g. pt_BR. May be omitted when the name exists in a
+      #   single language; if it exists in more than one, the answer is 409 template_ambiguous.
+      # @param variables [Array<String>, nil] (corpo) Body values, in order ({{1}}, {{2}}, …). The
+      #   count must match the approved template exactly — a mismatch is the number one cause of Meta
+      #   error 132000.
+      # @param header_variables [Array<String>, nil] (corpo) Text header: the value of its variable.
+      #   Image, video or document header: the media URL for THIS send in the first position — omitted,
+      #   the sample media registered when the template was created goes out (Meta requires the media on
+      #   every send).
+      # @param button_variables [Array<String>, nil] (corpo) Values for dynamic URL buttons, by button
+      #   index. Empty entries are skipped.
+      # @param code [String, nil] (corpo) AUTHENTICATION templates only. Meta requires the code both
+      #   in the body and in the copy-code button; we place it in both.
+      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def send_template(to:, template:, instance_id: UNSET, pool_id: UNSET, sticky: UNSET,
+                        quoted_message_id: UNSET, quoted_participant: UNSET,
+                        client_reference: UNSET, mentions: UNSET, scheduled_at: UNSET,
+                        groups: UNSET, tags: UNSET, force: UNSET, language: UNSET,
+                        variables: UNSET, header_variables: UNSET, button_variables: UNSET,
+                        code: UNSET, idempotency_key: nil, timeout: nil)
+        payload = compact(
+          "instance_id" => instance_id,
+          "pool_id" => pool_id,
+          "sticky" => sticky,
+          "to" => to,
+          "quoted_message_id" => quoted_message_id,
+          "quoted_participant" => quoted_participant,
+          "client_reference" => client_reference,
+          "mentions" => mentions,
+          "scheduled_at" => scheduled_at,
+          "groups" => groups,
+          "tags" => tags,
+          "force" => force,
+          "template" => template,
+          "language" => language,
+          "variables" => variables,
+          "header_variables" => header_variables,
+          "button_variables" => button_variables,
+          "code" => code
+        )
+        request("POST",
+                "/messages/template",
                 body: payload,
                 idempotency_key: idempotency_key,
                 timeout: timeout)

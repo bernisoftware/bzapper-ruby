@@ -210,59 +210,6 @@ module Bzapper
                 timeout: timeout)
       end
 
-      # The WhatsApp Business (Cloud API) account connected to the project. `GET /official/account`
-      #
-      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
-      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
-      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
-      def get_official_account(timeout: nil)
-        request("GET", "/official/account", timeout: timeout)
-      end
-
-      # Connect a WhatsApp Business account to the project (manual credentials). `POST
-      # /official/account`
-      #
-      # Manual connection with credentials (support fallback for the Embedded Signup). The access
-      # token is stored encrypted and never returned.
-      #
-      # @param waba_id [String] (corpo)
-      # @param phone_number_id [String] (corpo)
-      # @param access_token [String] (corpo)
-      # @param display_number [String, nil] (corpo)
-      # @param verified_name [String, nil] (corpo)
-      # @param status [String, nil] (corpo) Initial status. Omit for PENDENTE.
-      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
-      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
-      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
-      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
-      def connect_official_account(waba_id:, phone_number_id:, access_token:,
-                                   display_number: UNSET, verified_name: UNSET, status: UNSET,
-                                   idempotency_key: nil, timeout: nil)
-        payload = compact(
-          "waba_id" => waba_id,
-          "phone_number_id" => phone_number_id,
-          "access_token" => access_token,
-          "display_number" => display_number,
-          "verified_name" => verified_name,
-          "status" => status
-        )
-        request("POST",
-                "/official/account",
-                body: payload,
-                idempotency_key: idempotency_key,
-                timeout: timeout)
-      end
-
-      # Disconnect the project's WhatsApp Business account. `DELETE /official/account`
-      #
-      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
-      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
-      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
-      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
-      def disconnect_official_account(idempotency_key: nil, timeout: nil)
-        request("DELETE", "/official/account", idempotency_key: idempotency_key, timeout: timeout)
-      end
-
       # Set the instance proxy (network / IP isolation). `PATCH /instances/{id}/proxy`
       #
       # @param id [String] Instance ID (UUID).
@@ -281,6 +228,70 @@ module Bzapper
                 body: payload,
                 idempotency_key: idempotency_key,
                 timeout: timeout)
+      end
+
+      # Read the WhatsApp Business Account connected to the project. `GET /official/account`
+      #
+      # Mantido aqui por compatibilidade — o mesmo que `client.official.get_official_account`.
+      #
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def get_official_account(timeout: nil)
+        request("GET", "/official/account", timeout: timeout)
+      end
+
+      # Connect (or reconnect) a WhatsApp Business Account to the project. `POST /official/account`
+      #
+      # Mantido aqui por compatibilidade — o mesmo que `client.official.connect_official_account`.
+      #
+      # Stores the customer's Meta credentials for the project. Calling it again replaces them — that
+      # is the reconnection path when a token is revoked, and it never creates a second account for
+      # the same project. `phone_number_id` is optional: when omitted, the number is discovered from
+      # the WABA. If the WABA holds more than one number the call returns 409 with the list, so the
+      # choice stays with the account owner instead of being guessed.
+      #
+      # @param waba_id [String] (corpo)
+      # @param phone_number_id [String, nil] (corpo) Optional — discovered from the WABA when omitted.
+      # @param access_token [String] (corpo) The customer's WABA token, stored encrypted at rest. A
+      #   token taken from Meta's "API Setup" screen expires in 24h; for a lasting connection use a
+      #   system user with `whatsapp_business_messaging` + `whatsapp_business_management`.
+      # @param display_number [String, nil] (corpo)
+      # @param verified_name [String, nil] (corpo)
+      # @param status [String, nil] (corpo) Empty means PENDENTE, which is the correct state coming
+      #   out of Embedded Signup.
+      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def connect_official_account(waba_id:, access_token:, phone_number_id: UNSET,
+                                   display_number: UNSET, verified_name: UNSET, status: UNSET,
+                                   idempotency_key: nil, timeout: nil)
+        payload = compact(
+          "waba_id" => waba_id,
+          "phone_number_id" => phone_number_id,
+          "access_token" => access_token,
+          "display_number" => display_number,
+          "verified_name" => verified_name,
+          "status" => status
+        )
+        request("POST",
+                "/official/account",
+                body: payload,
+                idempotency_key: idempotency_key,
+                timeout: timeout)
+      end
+
+      # Disconnect the account from the project. `DELETE /official/account`
+      #
+      # Mantido aqui por compatibilidade — o mesmo que `client.official.disconnect_official_account`.
+      #
+      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def disconnect_official_account(idempotency_key: nil, timeout: nil)
+        request("DELETE", "/official/account", idempotency_key: idempotency_key, timeout: timeout)
       end
     end
   end

@@ -259,8 +259,8 @@ class ConformanceCoverageTest < Minitest::Test
   include Conformance
 
   def test_os_casos_foram_carregados
-    assert_operator CASES.fetch("cases").size, :>=, 181
-    assert_equal 161, CASES.fetch("ops").size
+    assert_operator CASES.fetch("cases").size, :>=, 208
+    assert_equal 192, CASES.fetch("ops").size
     assert_equal 2, CASES.fetch("max_retries")
   end
 
