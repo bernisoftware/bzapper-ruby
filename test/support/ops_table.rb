@@ -78,6 +78,7 @@ module Conformance
     "getMyEntitlements" => ->(c, _p) { c.billing.method(:get_my_entitlements) },
     "getMySubscription" => ->(c, _p) { c.billing.method(:get_my_subscription) },
     "getOfficialAccount" => ->(c, _p) { c.official.method(:get_official_account) },
+    "getOfficialInsights" => ->(c, _p) { c.official.method(:get_official_insights) },
     "getOfficialMedia" => ->(c, _p) { c.official.method(:get_official_media) },
     "getOfficialNumberProfile" => ->(c, _p) { c.official.method(:get_official_number_profile) },
     "getOfficialProfile" => ->(c, _p) { c.official.method(:get_official_profile) },

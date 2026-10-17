@@ -123,6 +123,33 @@ module Bzapper
         request("GET", "/official/status", timeout: timeout)
       end
 
+      # Estimated Meta cost and official-rail KPIs for a period. `GET /official/insights`
+      #
+      # What Meta will charge the customer (bZapper charges only the subscription), estimated per
+      # category — marketing, utility, authentication and service — for the period, the previous
+      # period of the same length, the current month so far and its projection, plus delivery and read
+      # rates, free messages, conversations from ads, marketing opt-outs, the templates sent, the most
+      # common failure reasons and each number's quality and limit. The estimate uses the category and
+      # `billable` flag Meta reports in each status webhook and, when missing, the template's category
+      # (conservative: utility counts as charged). Prices follow the recipient's country; the rate
+      # card used (Meta's, for Brazil, in BRL) comes in `rate_card`. Messages to other countries are
+      # counted in `cost.other_countries` but not priced.
+      #
+      # @param days [Integer, nil] (query) Period ending now: 7, 30 or 90 (default 30; up to 366).
+      # @param from [Time, String, nil] (query) Period start (RFC 3339). Overrides `days`.
+      # @param to [Time, String, nil] (query) Period end (RFC 3339). Default: now.
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def get_official_insights(days: nil, from: nil, to: nil, timeout: nil)
+        query = {
+          "days" => days,
+          "from" => from,
+          "to" => to
+        }
+        request("GET", "/official/insights", query: query, timeout: timeout)
+      end
+
       # Upload a file to Meta once and reuse it in many sends (multipart). `POST /official/media`
       #
       # Uploads the file to Meta through the project's default number (or `instance_id`) and returns
