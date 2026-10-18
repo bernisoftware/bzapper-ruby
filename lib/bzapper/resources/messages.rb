@@ -971,6 +971,12 @@ module Bzapper
       #   index. Empty entries are skipped.
       # @param code [String, nil] (corpo) AUTHENTICATION templates only. Meta requires the code both
       #   in the body and in the copy-code button; we place it in both.
+      # @param offer_expires_at [Time, String, nil] (corpo) Limited-time offer with `has_expiration`:
+      #   the deadline of THIS send (RFC 3339) — the countdown runs to it. Required for that template;
+      #   returns 422 before Meta otherwise.
+      # @param cards [Array<Hash>, nil] (corpo) Carousel templates: the values of each card, in order.
+      #   `header_url` is the media of the card for this send (omitted, the sample registered at
+      #   creation goes out).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
@@ -980,7 +986,8 @@ module Bzapper
                         client_reference: UNSET, mentions: UNSET, scheduled_at: UNSET,
                         groups: UNSET, tags: UNSET, force: UNSET, language: UNSET,
                         variables: UNSET, header_variables: UNSET, button_variables: UNSET,
-                        code: UNSET, idempotency_key: nil, timeout: nil)
+                        code: UNSET, offer_expires_at: UNSET, cards: UNSET, idempotency_key: nil,
+                        timeout: nil)
         payload = compact(
           "instance_id" => instance_id,
           "pool_id" => pool_id,
@@ -999,7 +1006,9 @@ module Bzapper
           "variables" => variables,
           "header_variables" => header_variables,
           "button_variables" => button_variables,
-          "code" => code
+          "code" => code,
+          "offer_expires_at" => offer_expires_at,
+          "cards" => cards
         )
         request("POST",
                 "/messages/template",

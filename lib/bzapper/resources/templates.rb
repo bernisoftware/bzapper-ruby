@@ -41,13 +41,21 @@ module Bzapper
       # @param code_expiry_minutes [Integer, nil] (corpo) AUTHENTICATION only, 1 to 90. In that
       #   category Meta writes the text itself and adds the copy-code button; this is the only thing you
       #   set.
+      # @param limited_time_offer [Hash, nil] (corpo) MARKETING only. Turns the template into a
+      #   limited-time offer: a badge (up to 16 characters) and, with `has_expiration`, a countdown to
+      #   the deadline sent in `offer_expires_at`. No footer; header only image or video; needs a URL
+      #   button (and, with a deadline, the copy-code button).
+      # @param cards [Array<Hash>, nil] (corpo) Carousel (MARKETING or UTILITY): 2 to 10 cards. The
+      #   template keeps only the opening `body`; each card has its own image or video, text (up to 160
+      #   characters) and 1–2 buttons (quick reply, URL or phone). Meta requires the same media type and
+      #   the same button types, in the same order, on every card.
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
       # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
       def create_template(name:, language:, category:, body:, header: UNSET, footer: UNSET,
-                          buttons: UNSET, code_expiry_minutes: UNSET, idempotency_key: nil,
-                          timeout: nil)
+                          buttons: UNSET, code_expiry_minutes: UNSET, limited_time_offer: UNSET,
+                          cards: UNSET, idempotency_key: nil, timeout: nil)
         payload = compact(
           "name" => name,
           "language" => language,
@@ -56,7 +64,9 @@ module Bzapper
           "body" => body,
           "footer" => footer,
           "buttons" => buttons,
-          "code_expiry_minutes" => code_expiry_minutes
+          "code_expiry_minutes" => code_expiry_minutes,
+          "limited_time_offer" => limited_time_offer,
+          "cards" => cards
         )
         request("POST",
                 "/templates",
@@ -98,14 +108,22 @@ module Bzapper
       # @param code_expiry_minutes [Integer, nil] (corpo) AUTHENTICATION only, 1 to 90. In that
       #   category Meta writes the text itself and adds the copy-code button; this is the only thing you
       #   set.
+      # @param limited_time_offer [Hash, nil] (corpo) MARKETING only. Turns the template into a
+      #   limited-time offer: a badge (up to 16 characters) and, with `has_expiration`, a countdown to
+      #   the deadline sent in `offer_expires_at`. No footer; header only image or video; needs a URL
+      #   button (and, with a deadline, the copy-code button).
+      # @param cards [Array<Hash>, nil] (corpo) Carousel (MARKETING or UTILITY): 2 to 10 cards. The
+      #   template keeps only the opening `body`; each card has its own image or video, text (up to 160
+      #   characters) and 1–2 buttons (quick reply, URL or phone). Meta requires the same media type and
+      #   the same button types, in the same order, on every card.
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
       # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
       # @raise [ArgumentError] parâmetro de caminho vazio, "." ou "..".
       def edit_template(id, name:, language:, category:, body:, header: UNSET, footer: UNSET,
-                        buttons: UNSET, code_expiry_minutes: UNSET, idempotency_key: nil,
-                        timeout: nil)
+                        buttons: UNSET, code_expiry_minutes: UNSET, limited_time_offer: UNSET,
+                        cards: UNSET, idempotency_key: nil, timeout: nil)
         payload = compact(
           "name" => name,
           "language" => language,
@@ -114,7 +132,9 @@ module Bzapper
           "body" => body,
           "footer" => footer,
           "buttons" => buttons,
-          "code_expiry_minutes" => code_expiry_minutes
+          "code_expiry_minutes" => code_expiry_minutes,
+          "limited_time_offer" => limited_time_offer,
+          "cards" => cards
         )
         request("PUT",
                 "/templates/#{segment(id, "id")}",
