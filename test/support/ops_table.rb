@@ -84,6 +84,7 @@ module Conformance
     "getOfficialAccount" => ->(c, _p) { c.official.method(:get_official_account) },
     "getOfficialInsights" => ->(c, _p) { c.official.method(:get_official_insights) },
     "getOfficialMedia" => ->(c, _p) { c.official.method(:get_official_media) },
+    "getOfficialNumberHealth" => ->(c, _p) { c.official.method(:get_official_number_health) },
     "getOfficialNumberProfile" => ->(c, _p) { c.official.method(:get_official_number_profile) },
     "getOfficialProfile" => ->(c, _p) { c.official.method(:get_official_profile) },
     "getOfficialSignupConfig" => ->(c, _p) { c.official.method(:get_official_signup_config) },

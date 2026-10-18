@@ -314,6 +314,21 @@ module Bzapper
                 timeout: timeout)
       end
 
+      # Quality and messaging-limit history of one number. `GET /official/numbers/{id}/health`
+      #
+      # Every change of quality rating and messaging limit (from Meta's webhook or a live check),
+      # newest first — what explains why the limit dropped or when quality worsened. Repeated states
+      # are not history and are not recorded.
+      #
+      # @param id [String] parâmetro de caminho
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      # @raise [ArgumentError] parâmetro de caminho vazio, "." ou "..".
+      def get_official_number_health(id, timeout: nil)
+        request("GET", "/official/numbers/#{segment(id, "id")}/health", timeout: timeout)
+      end
+
       # Disconnect one number. `DELETE /official/numbers/{id}`
       #
       # The conversation history stays: the mirror instance is archived, not deleted. Removing the
