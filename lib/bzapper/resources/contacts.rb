@@ -78,7 +78,10 @@ module Bzapper
       # Name/email/document/address are optional. Idempotent by phone: if the contact already exists,
       # only its empty fields are filled (never overwritten) and it is returned with 201.
       #
-      # @param phone [String] (corpo) +DDIdigits (E.164 without spaces).
+      # @param phone [String] (corpo) +DDIdigits (E.164 without spaces), or the WhatsApp LID
+      #   (`<digits>@lid`).
+      # @param lid [String, nil] (corpo) WhatsApp LID (`<digits>@lid`). With a phone too, the LID-only
+      #   contact merges into the phone one.
       # @param name [String, nil] (corpo)
       # @param email [String, nil] (corpo)
       # @param document [String, nil] (corpo)
@@ -88,10 +91,11 @@ module Bzapper
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
       # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
-      def create_contact(phone:, name: UNSET, email: UNSET, document: UNSET, document_type: UNSET,
-                         address: UNSET, idempotency_key: nil, timeout: nil)
+      def create_contact(phone:, lid: UNSET, name: UNSET, email: UNSET, document: UNSET,
+                         document_type: UNSET, address: UNSET, idempotency_key: nil, timeout: nil)
         payload = compact(
           "phone" => phone,
+          "lid" => lid,
           "name" => name,
           "email" => email,
           "document" => document,
@@ -107,23 +111,36 @@ module Bzapper
 
       # Import contacts in bulk. `POST /contacts/import`
       #
-      # Upserts up to 1000 contacts by phone in one call. A new contact is created with `source:
-      # import` and `status: pending_validation` (it needs opt-in before a campaign). An existing one
-      # has only its informed fields updated — a blank value never erases what is there. A
+      # Upserts up to 1000 contacts by phone — or by WhatsApp LID — in one call. Each row's `phone`
+      # takes the number with country code OR the LID (`123456789012345@lid`): the API tells which one
+      # it is and stores it in the right place. A LID-only contact is addressed by the LID until its
+      # phone becomes known (on the first send, or when the person replies), when it gets the phone —
+      # or merges into the contact that already had it. A list of just numbers/LIDs with no name
+      # works: name and the rest fill in when the person replies. Top-level `tags` and `groups` apply
+      # to every row. A new contact is created with `source: import` and `status: pending_validation`;
+      # it can already receive campaigns, and becomes `active` when the person replies. An existing
+      # one has only its informed fields updated — a blank value never erases what is there. A
       # suppressed/opted-out/blocked contact is reported in `skipped_rows` and never resurrected. Tags
       # and groups are created on demand. A bad row is reported in `errors` and does NOT fail the rest
       # of the call. `dry_run` validates everything and writes nothing.
       #
       # @param contacts [Array<Hash>] (corpo)
       # @param dry_run [Boolean, nil] (corpo) Validates and reports without writing anything.
+      # @param tags [Array<String>, nil] (corpo) Tags applied to EVERY row (added to each row's own
+      #   tags).
+      # @param groups [Array<String>, nil] (corpo) Groups applied to EVERY row (added to each row's
+      #   own groups).
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
       # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
-      def import_contacts(contacts:, dry_run: UNSET, idempotency_key: nil, timeout: nil)
+      def import_contacts(contacts:, dry_run: UNSET, tags: UNSET, groups: UNSET,
+                          idempotency_key: nil, timeout: nil)
         payload = compact(
           "contacts" => contacts,
-          "dry_run" => dry_run
+          "dry_run" => dry_run,
+          "tags" => tags,
+          "groups" => groups
         )
         request("POST",
                 "/contacts/import",

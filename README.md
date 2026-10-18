@@ -10,13 +10,13 @@ Zero dependências de runtime (só biblioteca padrão: `net/http`, `json`, `open
 ## Instalação
 
 ```bash
-gem install bzapper -v 0.15.0
+gem install bzapper -v 0.15.1
 ```
 
 Ou no `Gemfile` — **fixe a versão exata** (cada release declara se muda a superfície pública):
 
 ```ruby
-gem "bzapper", "0.15.0"
+gem "bzapper", "0.15.1"
 ```
 
 ## Hello world
@@ -190,7 +190,7 @@ O vínculo contato ↔ projeto/número é mantido **automaticamente** pela API.
 ### Importar em lote
 
 Até **1000** contatos por chamada, upsert por telefone: o novo entra como
-`pending_validation` (precisa de opt-in antes de campanha), o que já existe só recebe os campos
+`pending_validation` (já pode receber campanha e vira ativo quando a pessoa responde), o que já existe só recebe os campos
 informados — valor em branco não apaga o que está lá. Linha ruim vai para `errors` e **não**
 derruba o resto; contato suprimido/opt-out/bloqueado aparece em `skipped_rows` e nunca
 ressuscita. Tags e grupos são criados na hora. `dry_run: true` valida tudo e não grava nada.
