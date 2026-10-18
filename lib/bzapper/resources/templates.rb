@@ -76,6 +76,53 @@ module Bzapper
         request("GET", "/templates/#{segment(id, "id")}", timeout: timeout)
       end
 
+      # Edit a template (content goes back to Meta review). `PUT /templates/{id}`
+      #
+      # Same body as creation; `name` and `language` are the template identity and do not change. Meta
+      # allows editing an APPROVED template once every 24 hours and ten times in 30 days (rejected or
+      # paused: no limit), sends it back to review (the template returns to `PENDING` and does not
+      # send until the decision arrives by webhook) and does not let an approved template change
+      # category.
+      #
+      # @param id [String] parâmetro de caminho
+      # @param name [String] (corpo) Lowercase letters, numbers and _. This is the name you send by.
+      # @param language [String] (corpo) e.g. pt_BR. Both pt-BR and pt_BR are accepted.
+      # @param category [String] (corpo) Decides what the conversation COSTS and what Meta accepts in
+      #   the content — not an administrative label. UTILITY is cheaper but only covers what the
+      #   customer already expects; promotional wording in it gets reclassified, and the price changes
+      #   with it.
+      # @param header [Hash, nil] (corpo)
+      # @param body [Hash] (corpo)
+      # @param footer [String, nil] (corpo) Up to 60 characters. Accepts no variables.
+      # @param buttons [Array<Hash>, nil] (corpo)
+      # @param code_expiry_minutes [Integer, nil] (corpo) AUTHENTICATION only, 1 to 90. In that
+      #   category Meta writes the text itself and adds the copy-code button; this is the only thing you
+      #   set.
+      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      # @raise [ArgumentError] parâmetro de caminho vazio, "." ou "..".
+      def edit_template(id, name:, language:, category:, body:, header: UNSET, footer: UNSET,
+                        buttons: UNSET, code_expiry_minutes: UNSET, idempotency_key: nil,
+                        timeout: nil)
+        payload = compact(
+          "name" => name,
+          "language" => language,
+          "category" => category,
+          "header" => header,
+          "body" => body,
+          "footer" => footer,
+          "buttons" => buttons,
+          "code_expiry_minutes" => code_expiry_minutes
+        )
+        request("PUT",
+                "/templates/#{segment(id, "id")}",
+                body: payload,
+                idempotency_key: idempotency_key,
+                timeout: timeout)
+      end
+
       # Delete a template. `DELETE /templates/{id}`
       #
       # Removes it here and at Meta. Meta deletes ALL languages of a name at once — so when another
@@ -91,6 +138,65 @@ module Bzapper
       def delete_template(id, idempotency_key: nil, timeout: nil)
         request("DELETE",
                 "/templates/#{segment(id, "id")}",
+                idempotency_key: idempotency_key,
+                timeout: timeout)
+      end
+
+      # Browse Meta's Template Library (ready-made utility and authentication texts). `GET
+      # /templates/library`
+      #
+      # Texts Meta has already approved. A template created from one of them without changing the text
+      # is approved immediately — no 24-hour review.
+      #
+      # @param search [String, nil] (query) Free text: order, delivery, payment…
+      # @param topic [String, nil] (query)
+      # @param usecase [String, nil] (query)
+      # @param industry [String, nil] (query)
+      # @param language [String, nil] (query) e.g. pt_BR.
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def list_library_templates(search: nil, topic: nil, usecase: nil, industry: nil,
+                                 language: nil, timeout: nil)
+        query = {
+          "search" => search,
+          "topic" => topic,
+          "usecase" => usecase,
+          "industry" => industry,
+          "language" => language
+        }
+        request("GET", "/templates/library", query: query, timeout: timeout)
+      end
+
+      # Create a template from the Template Library. `POST /templates/library`
+      #
+      # The text is Meta's, unchanged — that is what makes it approved at once. You only provide what
+      # the buttons need: the site link of a URL button (with an example of the variable suffix, when
+      # there is one) or the phone of a call button. Authentication items take `code_expiry_minutes`.
+      #
+      # @param library_template_name [String] (corpo)
+      # @param name [String, nil] (corpo) Your template name (defaults to the library name).
+      # @param language [String] (corpo)
+      # @param button_inputs [Array<Hash>, nil] (corpo) What each URL / phone button of the library
+      #   template needs, in order.
+      # @param code_expiry_minutes [Integer, nil] (corpo) Authentication items only (default 10).
+      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def create_template_from_library(library_template_name:, language:, name: UNSET,
+                                       button_inputs: UNSET, code_expiry_minutes: UNSET,
+                                       idempotency_key: nil, timeout: nil)
+        payload = compact(
+          "library_template_name" => library_template_name,
+          "name" => name,
+          "language" => language,
+          "button_inputs" => button_inputs,
+          "code_expiry_minutes" => code_expiry_minutes
+        )
+        request("POST",
+                "/templates/library",
+                body: payload,
                 idempotency_key: idempotency_key,
                 timeout: timeout)
       end
