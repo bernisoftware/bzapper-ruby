@@ -68,6 +68,28 @@ module Bzapper
         request("GET", "/campaigns/estimate", query: query, timeout: timeout)
       end
 
+      # What Meta will charge for a template campaign (official rail). `GET /campaigns/meta-cost`
+      #
+      # From the template category (the one Meta bills, which follows reclassification) and Meta's
+      # Brazil rate card: the cost of `recipients` messages — charged by Meta on the customer's card;
+      # bZapper charges only the subscription — and how many days the number's daily new-contact limit
+      # requires.
+      #
+      # @param recipients [Integer] (query)
+      # @param template [String] (query)
+      # @param language [String, nil] (query)
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def estimate_campaign_meta_cost(recipients:, template:, language: nil, timeout: nil)
+        query = {
+          "recipients" => recipients,
+          "template" => template,
+          "language" => language
+        }
+        request("GET", "/campaigns/meta-cost", query: query, timeout: timeout)
+      end
+
       # Per-number campaign eligibility (connection and age). `GET /campaigns/eligibility`
       #
       # Same engine the dispatcher uses: which numbers can send campaigns now, the account's campaign

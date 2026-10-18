@@ -61,6 +61,7 @@ module Conformance
     "editMessage" => ->(c, _p) { c.advanced.method(:edit_message) },
     "editTemplate" => ->(c, _p) { c.templates.method(:edit_template) },
     "estimateCampaign" => ->(c, _p) { c.campaigns.method(:estimate_campaign) },
+    "estimateCampaignMetaCost" => ->(c, _p) { c.campaigns.method(:estimate_campaign_meta_cost) },
     "exchangeConnectCode" => ->(_c, p) { p.method(:exchange_connect_code) },
     "forwardMessage" => ->(c, _p) { c.advanced.method(:forward_message) },
     "getAccountUsage" => ->(c, _p) { c.usage.method(:get_account_usage) },
