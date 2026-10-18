@@ -306,9 +306,9 @@ module Bzapper
       #
       # Must be an APPROVED template of the Authentication category or — until Meta releases that
       # category for the account (business verification + 2,000 daily limit) — a provisional Utility
-      # template with a copy-code button and at most one body variable; the code goes in the variable
-      # and in the button. An empty `template_id` clears the choice (the first approved Authentication
-      # template is used again).
+      # template with exactly one body variable, which receives the code (Meta does not accept the
+      # copy-code button in Utility). An empty `template_id` clears the choice (the first approved
+      # Authentication template is used again).
       #
       # @param template_id [String, nil] (corpo) Empty clears the choice.
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
