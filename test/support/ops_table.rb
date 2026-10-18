@@ -207,6 +207,7 @@ module Conformance
     "uploadOfficialNumberProfilePhoto" => ->(c, _p) { c.official.method(:upload_official_number_profile_photo) },
     "uploadOfficialProfilePhoto" => ->(c, _p) { c.official.method(:upload_official_profile_photo) },
     "uploadProjectLogo" => ->(c, _p) { c.accounts.method(:upload_project_logo) },
-    "uploadTemplateMedia" => ->(c, _p) { c.templates.method(:upload_template_media) }
+    "uploadTemplateMedia" => ->(c, _p) { c.templates.method(:upload_template_media) },
+    "validateTemplate" => ->(c, _p) { c.templates.method(:validate_template) }
   }.freeze
 end

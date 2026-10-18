@@ -221,6 +221,67 @@ module Bzapper
                 timeout: timeout)
       end
 
+      # Check a template against Meta's rules without submitting it. `POST /templates/validate`
+      #
+      # The same validation as creation (variables, examples, lengths, buttons, category rules, offer
+      # and carousel rules, a repeated name), with no call to Meta and no submission spent. Use it
+      # while the template is being written — the panel does — to never send what Meta would reject.
+      # `?id=` checks an edit (its own name does not count as repeated; an approved template cannot
+      # change category).
+      #
+      # @param id [String, nil] (query) Template being edited.
+      # @param name [String] (corpo) Lowercase letters, numbers and _. This is the name you send by.
+      # @param language [String] (corpo) e.g. pt_BR. Both pt-BR and pt_BR are accepted.
+      # @param category [String] (corpo) Decides what the conversation COSTS and what Meta accepts in
+      #   the content — not an administrative label. UTILITY is cheaper but only covers what the
+      #   customer already expects; promotional wording in it gets reclassified, and the price changes
+      #   with it.
+      # @param header [Hash, nil] (corpo)
+      # @param body [Hash] (corpo)
+      # @param footer [String, nil] (corpo) Up to 60 characters. Accepts no variables.
+      # @param buttons [Array<Hash>, nil] (corpo)
+      # @param code_expiry_minutes [Integer, nil] (corpo) AUTHENTICATION only, 1 to 90. In that
+      #   category Meta writes the text itself and adds the copy-code button; this is the only thing you
+      #   set.
+      # @param limited_time_offer [Hash, nil] (corpo) MARKETING only. Turns the template into a
+      #   limited-time offer: a badge (up to 16 characters) and, with `has_expiration`, a countdown to
+      #   the deadline sent in `offer_expires_at`. No footer; header only image or video; needs a URL
+      #   button (and, with a deadline, the copy-code button).
+      # @param cards [Array<Hash>, nil] (corpo) Carousel (MARKETING or UTILITY): 2 to 10 cards. The
+      #   template keeps only the opening `body`; each card has its own image or video, text (up to 160
+      #   characters) and 1–2 buttons (quick reply, URL or phone). Meta requires the same media type and
+      #   the same button types, in the same order, on every card.
+      # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def validate_template(name:, language:, category:, body:, id: nil, header: UNSET,
+                            footer: UNSET, buttons: UNSET, code_expiry_minutes: UNSET,
+                            limited_time_offer: UNSET, cards: UNSET, idempotency_key: nil,
+                            timeout: nil)
+        query = {
+          "id" => id
+        }
+        payload = compact(
+          "name" => name,
+          "language" => language,
+          "category" => category,
+          "header" => header,
+          "body" => body,
+          "footer" => footer,
+          "buttons" => buttons,
+          "code_expiry_minutes" => code_expiry_minutes,
+          "limited_time_offer" => limited_time_offer,
+          "cards" => cards
+        )
+        request("POST",
+                "/templates/validate",
+                query: query,
+                body: payload,
+                idempotency_key: idempotency_key,
+                timeout: timeout)
+      end
+
       # Performance of each template (sent, delivered, read, failed). `GET /templates/analytics`
       #
       # Counted from the messages sent through each template in the last `days` days, grouped by
@@ -305,10 +366,12 @@ module Bzapper
       # /templates/otp`
       #
       # Must be an APPROVED template of the Authentication category or — until Meta releases that
-      # category for the account (business verification + 2,000 daily limit) — a provisional Utility
-      # template with exactly one body variable, which receives the code (Meta does not accept the
-      # copy-code button in Utility). An empty `template_id` clears the choice (the first approved
-      # Authentication template is used again).
+      # category for the account (business verification + 2,000 daily limit) — a provisional template:
+      # MARKETING with a copy-code button and at most one body variable (the customer copies only the
+      # code; Meta accepts that button only in Marketing — costlier, and not delivered to people who
+      # opted out of marketing), or UTILITY with exactly one body variable that receives the code in
+      # the text. An empty `template_id` clears the choice (the first approved Authentication template
+      # is used again).
       #
       # @param template_id [String, nil] (corpo) Empty clears the choice.
       # @param idempotency_key [String, nil] chave de idempotência (senão a SDK gera uma).
