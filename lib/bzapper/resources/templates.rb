@@ -201,6 +201,22 @@ module Bzapper
                 timeout: timeout)
       end
 
+      # Performance of each template (sent, delivered, read, failed). `GET /templates/analytics`
+      #
+      # Counted from the messages sent through each template in the last `days` days, grouped by
+      # template name.
+      #
+      # @param days [Integer, nil] (query)
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      def get_template_analytics(days: nil, timeout: nil)
+        query = {
+          "days" => days
+        }
+        request("GET", "/templates/analytics", query: query, timeout: timeout)
+      end
+
       # Import templates that exist at Meta and not here. `POST /templates/sync`
       #
       # For the account that already used the Cloud API before bZapper and created templates in

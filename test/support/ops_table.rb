@@ -94,6 +94,7 @@ module Conformance
     "getProjectBrand" => ->(c, _p) { c.accounts.method(:get_project_brand) },
     "getProjectsHealth" => ->(c, _p) { c.accounts.method(:get_projects_health) },
     "getTemplate" => ->(c, _p) { c.templates.method(:get_template) },
+    "getTemplateAnalytics" => ->(c, _p) { c.templates.method(:get_template_analytics) },
     "getUsage" => ->(c, _p) { c.usage.method(:get_usage) },
     "groupInviteLink" => ->(c, _p) { c.groups.method(:group_invite_link) },
     "importContacts" => ->(c, _p) { c.contacts.method(:import_contacts) },

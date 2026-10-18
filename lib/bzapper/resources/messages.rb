@@ -965,7 +965,8 @@ module Bzapper
       # @param header_variables [Array<String>, nil] (corpo) Text header: the value of its variable.
       #   Image, video or document header: the media URL for THIS send in the first position — omitted,
       #   the sample media registered when the template was created goes out (Meta requires the media on
-      #   every send).
+      #   every send). Location header: `[latitude, longitude, place name, address]` (the last two
+      #   optional).
       # @param button_variables [Array<String>, nil] (corpo) Values for dynamic URL buttons, by button
       #   index. Empty entries are skipped.
       # @param code [String, nil] (corpo) AUTHENTICATION templates only. Meta requires the code both
