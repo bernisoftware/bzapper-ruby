@@ -19,7 +19,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -84,7 +86,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -150,7 +154,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -216,7 +222,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -283,7 +291,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -349,7 +359,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -416,7 +428,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -488,7 +502,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -562,7 +578,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -631,7 +649,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -699,7 +719,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -769,7 +791,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -845,7 +869,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise
@@ -935,7 +961,9 @@ module Bzapper
       #   rotation (e.g. campaign/broadcast).
       # @param to [String] (corpo) Destination: E.164 phone (+DDIdigits), contact JID
       #   (…@s.whatsapp.net), group JID (…@g.us) or the contact's @lid. A @lid is translated to the
-      #   phone when the connected number knows it; the official rail accepts phone only.
+      #   phone when the connected number knows it. Official rail: phone or the Meta BSUID (`BR.1349…`)
+      #   — a known phone is preferred; authentication templates need a phone (422
+      #   official_otp_needs_phone); a BSUID on the unofficial rail is 400 bsuid_official_only.
       # @param quoted_message_id [String, nil] (corpo) Quoted wa_message_id (reply).
       # @param quoted_participant [String, nil] (corpo) Author (phone or JID) of the quoted/reacted
       #   message. Only needed in groups when the quoted message is not in bZapper history — otherwise

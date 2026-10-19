@@ -78,10 +78,12 @@ module Bzapper
       # Name/email/document/address are optional. Idempotent by phone: if the contact already exists,
       # only its empty fields are filled (never overwritten) and it is returned with 201.
       #
-      # @param phone [String] (corpo) +DDIdigits (E.164 without spaces), or the WhatsApp LID
-      #   (`<digits>@lid`).
+      # @param phone [String] (corpo) +DDIdigits (E.164 without spaces), the WhatsApp LID
+      #   (`<digits>@lid`) or the Meta BSUID (`BR.1349…`).
       # @param lid [String, nil] (corpo) WhatsApp LID (`<digits>@lid`). With a phone too, the LID-only
       #   contact merges into the phone one.
+      # @param bsuid [String, nil] (corpo) Meta business-scoped user ID (official rail). With a phone
+      #   too, it is stored on the phone contact.
       # @param name [String, nil] (corpo)
       # @param email [String, nil] (corpo)
       # @param document [String, nil] (corpo)
@@ -91,11 +93,13 @@ module Bzapper
       # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
       # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
       # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
-      def create_contact(phone:, lid: UNSET, name: UNSET, email: UNSET, document: UNSET,
-                         document_type: UNSET, address: UNSET, idempotency_key: nil, timeout: nil)
+      def create_contact(phone:, lid: UNSET, bsuid: UNSET, name: UNSET, email: UNSET,
+                         document: UNSET, document_type: UNSET, address: UNSET,
+                         idempotency_key: nil, timeout: nil)
         payload = compact(
           "phone" => phone,
           "lid" => lid,
+          "bsuid" => bsuid,
           "name" => name,
           "email" => email,
           "document" => document,
