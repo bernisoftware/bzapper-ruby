@@ -10,13 +10,13 @@ Zero dependências de runtime (só biblioteca padrão: `net/http`, `json`, `open
 ## Instalação
 
 ```bash
-gem install bzapper -v 0.15.2
+gem install bzapper -v 0.16.0
 ```
 
 Ou no `Gemfile` — **fixe a versão exata** (cada release declara se muda a superfície pública):
 
 ```ruby
-gem "bzapper", "0.15.2"
+gem "bzapper", "0.16.0"
 ```
 
 ## Hello world
@@ -83,7 +83,7 @@ spec OpenAPI em snake_case (`sendText` → `send_text`):
 | --- | --- |
 | `client.messages` | `send_text`, `send_image`, `send_video`, `send_document`, `send_audio`, `send_sticker`, `send_location`, `send_contact`, `send_poll`, `send_reaction`, `send_buttons`, `send_list`, `send_otp`, `send_template` (trilho oficial), `mark_read`, `presence_chat` |
 | `client.scheduling` | `list_scheduled`, `cancel_scheduled` |
-| `client.instances` | números: `list_instances`, `create_instance`, `connect_instance` (QR/código), `get_instance`, `disconnect_instance`, `logout_instance`, `clear_instance_session`, `archive_instance`, proxy, filtros de entrada… |
+| `client.instances` | números: `list_instances`, `create_instance`, `connect_instance` (QR/código), `get_instance`, `get_instance_uptime` (disponibilidade em 24h/7d/30d), `disconnect_instance`, `logout_instance`, `clear_instance_session`, `archive_instance`, proxy, filtros de entrada… |
 | `client.official` | trilho oficial (WhatsApp Cloud API): `get_official_account`, `connect_official_account`, `disconnect_official_account`, `get_official_status`, Embedded Signup (`get_official_signup_config`, `complete_official_signup`), números da WABA (`list_official_numbers`, `list_available_official_numbers`, `add_official_number`, `set_default_official_number`, `disconnect_official_number`), perfil comercial (`get/update_official_profile`, `upload_official_profile_photo`, `reregister_official_profile` e as variantes `*_official_number_profile*` por número) |
 | `client.templates` | templates aprovados pela Meta: `list_templates`, `create_template`, `get_template`, `delete_template`, `sync_templates`, `upload_template_media`, `get/set_fallback_template` |
 | `client.groups` | `list_groups`, `create_group`, `get_group`, `update_group`, `update_group_participants`, `group_invite_link`, `join_group`, `preview_group_invite`, `leave_group`, pedidos de entrada |
@@ -97,6 +97,7 @@ spec OpenAPI em snake_case (`sendText` → `send_text`):
 | `client.usage` / `client.billing` | consumo; plano, assinatura, add-ons, faturas, preços |
 | `client.accounts` | perfil, chaves de API (`rotate_my_key`), marca, projetos, usuários |
 | `client.connect` | apps parceiros conectados à sua conta |
+| `client.ai` | apps de IA (conector MCP) com acesso à conta: `list_ai_connections`, `revoke_ai_connection` |
 | `client.system` | `get_health` |
 
 Convenções (iguais em todos os métodos):

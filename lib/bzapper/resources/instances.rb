@@ -104,6 +104,24 @@ module Bzapper
                 timeout: timeout)
       end
 
+      # Number availability — share of time connected in 24h, 7d and 30d, and the latest status
+      # changes. `GET /instances/{id}/uptime`
+      #
+      # Every status change of a number is recorded. This returns the share of time it was connected
+      # (warming counts as connected) over the last 24 hours, 7 days and 30 days, since when it is in
+      # its current status, and the 20 latest transitions. History starts when it began to be
+      # recorded: a window that goes back further shrinks to `tracked_since` instead of counting the
+      # unrecorded time as offline.
+      #
+      # @param id [String] Instance ID (UUID).
+      # @param timeout [Numeric, nil] segundos por tentativa (padrão: o do cliente).
+      # @return [Hash, Array, nil] o JSON da resposta, inteiro (nil em 204).
+      # @raise [Bzapper::Error] resposta fora de 2xx ou falha de rede.
+      # @raise [ArgumentError] parâmetro de caminho vazio, "." ou "..".
+      def get_instance_uptime(id, timeout: nil)
+        request("GET", "/instances/#{segment(id, "id")}/uptime", timeout: timeout)
+      end
+
       # Connect the instance via QR or pairing code. `POST /instances/{id}/connect`
       #
       # @param id [String] Instance ID (UUID).

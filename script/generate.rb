@@ -38,6 +38,7 @@ TAG_DOCS = {
   "accounts" => "Conta, perfil, chaves de API, marca, projetos e usuários",
   "advanced" => "Recursos avançados: editar/apagar/encaminhar, perfil, privacidade, chats, etiquetas, bloqueio e chamadas",
   "advisories" => "Avisos \"atualize sua integração\"",
+  "ai" => "Conector de IA (MCP): apps de IA autorizados a operar a conta e revogação do acesso",
   "billing" => "Cobrança: plano, assinatura, add-ons, faturas e preços",
   "campaigns" => "Campanhas: estimativa, destinatários, simulação e controle",
   "connect" => "bZapper Connect do lado do CLIENTE: apps parceiros conectados à conta",

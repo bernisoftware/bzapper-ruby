@@ -19,6 +19,7 @@ require_relative "resources/advisories"
 require_relative "resources/webhooks"
 require_relative "resources/pools"
 require_relative "resources/connect"
+require_relative "resources/ai"
 require_relative "resources/official"
 require_relative "resources/templates"
 require_relative "resources/partner"
@@ -75,6 +76,9 @@ module Bzapper
     # @return [Resources::Connect] bZapper Connect do lado do CLIENTE: apps parceiros conectados à conta.
     attr_reader :connect
 
+    # @return [Resources::Ai] Conector de IA (MCP): apps de IA autorizados a operar a conta e revogação do acesso.
+    attr_reader :ai
+
     # @return [Resources::Official] Trilho oficial (WhatsApp Cloud API): conta WABA, Embedded Signup, números e perfil comercial.
     attr_reader :official
 
@@ -82,7 +86,7 @@ module Bzapper
     attr_reader :templates
 
     # Nomes dos recursos, na ordem da spec.
-    RESOURCES = %i[accounts contacts usage billing advanced conversations instances groups system messages scheduling campaigns advisories webhooks pools connect official templates].freeze
+    RESOURCES = %i[accounts contacts usage billing advanced conversations instances groups system messages scheduling campaigns advisories webhooks pools connect ai official templates].freeze
 
     private
 
@@ -103,6 +107,7 @@ module Bzapper
       @webhooks = Resources::Webhooks.new(transport)
       @pools = Resources::Pools.new(transport)
       @connect = Resources::Connect.new(transport)
+      @ai = Resources::Ai.new(transport)
       @official = Resources::Official.new(transport)
       @templates = Resources::Templates.new(transport)
     end
